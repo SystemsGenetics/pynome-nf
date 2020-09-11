@@ -36,7 +36,7 @@ process crawl_and_mirror {
 
     script:
         """
-        pynome -d ${params.output.pynome_data_dir} -c -m -t carnosa
+        pynome -d ${params.output.pynome_data_dir} -c -m
         """
 }
 
@@ -56,10 +56,13 @@ process create_index_jobs {
 INDEX_JOB_FILES.flatMap().set {INDEX_JOB_FILE_LIST}
 
 process index_genome {
+    label "index_genome"
+
     input:
         path index_file from INDEX_JOB_FILE_LIST
+
     script:
         """
-        pynome -d ${params.output.pynome_data_dir} -i -f $index_file
+        pynome -d ${params.output.pynome_data_dir} -n ${task.cpus} -i -f $index_file
         """
 }
